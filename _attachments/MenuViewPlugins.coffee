@@ -22,3 +22,17 @@ MenuView::generalMenu = ->
     .join("")
   )
 
+  $("nav.mdl-navigation").html "
+    <a href='#wiki/new' class='mdl-navigation__link top_links'>
+      <span>
+        New
+      </span>
+    </a>
+
+    <a href='#wiki/tags' class='mdl-navigation__link top_links'>
+      <span>
+        Tags
+      </span>
+    </a>
+
+  "

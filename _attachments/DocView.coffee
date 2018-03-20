@@ -21,13 +21,13 @@ class DocView extends Backbone.View
         <h1>#{doc.title}</h1>
         <h3>
           #{
-            doc.tags.map (tag) =>
+            doc.tags?.map (tag) =>
               "
                 <button class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect'>
                   <a class='tag' href='#wiki/doc/#{slugify(tag)}'>#{tag}</a>
                 </button>
               "
-            .join("")
+            .join("") or ""
           }
         </h3>
         <h3 id='docsWithThisTag'>
@@ -50,7 +50,7 @@ class DocView extends Backbone.View
 
 
 
-          #{doc.content.replace(/\n/g,"<br/>")}
+          #{doc.content?.replace(/\n/g,"<br/>") or ""}
       "
 
 module.exports = DocView

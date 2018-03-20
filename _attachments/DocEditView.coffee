@@ -1,7 +1,10 @@
+titleize = require "underscore.string/titleize"
+
 class DocEditView extends Backbone.View
 
   events:
     "click button#save": "save"
+    "click button#create": "create"
 
   save: =>
     @doc.title = @$("#title").val()
@@ -11,9 +14,33 @@ class DocEditView extends Backbone.View
     .then =>
       Coconut.router.navigate "wiki/doc/#{@docId}", {trigger: true}
 
+  create: =>
+    Coconut.router.navigate "wiki/edit/#{slugify @$("#title").val()}", {trigger: true}
 
   render: =>
+    unless @docId
+      return @$el.html "
+        <style>
+          #title{
+            display:block;
+            font-size:2em;
+            display:block;
+          }
+          #create{
+            font-size: 2em;
+          }
+        </style>
+        <label>Title</label>
+        <input id='title'/>
+        <button id='create'>Create</button>
+      "
+
     Coconut.database.get @docId
+    .catch =>
+      console.log "Creating new doc"
+      Promise.resolve
+        _id: @docId
+        tags: []
     .then (@doc) =>
       @$el.html "
         <style>
@@ -36,10 +63,10 @@ class DocEditView extends Backbone.View
           }
         </style>
         <label>Title</label>
-        <input id='title' value='#{@doc.title}'/>
+        <input id='title' value='#{@doc.title or titleize(@docId)}'/>
         <label>Tags (one on each line)</label>
-        <textarea id='tags'>#{@doc.tags.join("\n")}</textarea>
-        <textarea id='content'>#{@doc.content}</textarea>
+        <textarea id='tags'>#{@doc?.tags.join("\n") or ""}</textarea>
+        <textarea id='content'>#{@doc.content or ""}</textarea>
         <button id='save'>Save</button>
       "
 

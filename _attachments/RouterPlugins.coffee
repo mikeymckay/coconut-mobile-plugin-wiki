@@ -7,7 +7,7 @@ DocEditView = require './DocEditView'
 
 Router::default = =>
   Backbone.history.loadUrl()
-  Coconut.router.navigate "##{Coconut.databaseName}/tags",trigger: true
+  Coconut.router.navigate "##{Coconut.databaseName}/doc/home",trigger: true
 
 Coconut.router._bindRoutes()
 
@@ -25,5 +25,10 @@ Coconut.router.route ":database/doc/:docId", (docId) ->
 Coconut.router.route ":database/edit/:docId", (docId) ->
   Coconut.docEditView ?= new DocEditView()
   Coconut.docEditView.docId = docId
+  Coconut.docEditView.setElement $("#content")
+  Coconut.docEditView.render()
+
+Coconut.router.route ":database/new", (docId) ->
+  Coconut.docEditView ?= new DocEditView()
   Coconut.docEditView.setElement $("#content")
   Coconut.docEditView.render()

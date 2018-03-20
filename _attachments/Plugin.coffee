@@ -1,6 +1,8 @@
 PouchDB.plugin(require('pouchdb-upsert'))
 
 require './DesignDocs'
+require './SyncPlugins'
+require './MenuViewPlugins'
 
 $.getScript("datatables.min.js")
 $("head").append "<link rel='stylesheet' type='text/css' href='datatables.min.css'/>"
@@ -32,11 +34,8 @@ onStartup = ->
 
     DesignDocs.load()
 
-
-
   catch error
     console.error error
-
 
 global.StartPlugins = [] unless StartPlugins?
 StartPlugins.push onStartup
