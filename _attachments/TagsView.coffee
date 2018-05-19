@@ -7,11 +7,11 @@ class TagsView extends Backbone.View
     .then (result) =>
       docsByTag = _(result.rows).groupBy (row) => row.key
       @$el.html "
-        <h1>Tags</h1>
+        <h1>Documents Grouped By Tag/h1>
         #{
           _(docsByTag).map (rows, tag) =>
             "
-            <h2>#{tag}</h2>
+            <h2><a href='#wiki/doc/#{slugify(tag)}'>#{tag}</a></h2>
               #{
                 rows.map (row) =>
                   "<a style='display:block' href='#wiki/doc/#{row.id}'>#{row.value}</a>"

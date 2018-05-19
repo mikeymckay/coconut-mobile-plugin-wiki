@@ -30,5 +30,7 @@ Coconut.router.route ":database/edit/:docId", (docId) ->
 
 Coconut.router.route ":database/new", (docId) ->
   Coconut.docEditView ?= new DocEditView()
+  Coconut.docEditView.doc = null
+  Coconut.docEditView.docId = null
   Coconut.docEditView.setElement $("#content")
   Coconut.docEditView.render()

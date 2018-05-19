@@ -1,8 +1,11 @@
 PouchDB.plugin(require('pouchdb-upsert'))
+PouchDB.plugin(require('pouchdb-quick-search'))
 
 require './DesignDocs'
 require './SyncPlugins'
 require './MenuViewPlugins'
+#require './LoadCss'
+
 
 $.getScript("datatables.min.js")
 $("head").append "<link rel='stylesheet' type='text/css' href='datatables.min.css'/>"
