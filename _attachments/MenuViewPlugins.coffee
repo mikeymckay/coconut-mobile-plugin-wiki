@@ -3,6 +3,8 @@
 SweetAlert = require 'sweetalert2'
 titleize = require "underscore.string/titleize"
 humanize = require "underscore.string/humanize"
+Fuse = require 'fuse.js'
+
 
 MenuView::questionLinks = (option) ->
   $("#drawer_question_sets").html MenuView.links().join("")
@@ -52,20 +54,26 @@ MenuView::generalMenu = ->
   
 
   $("#search").keyup =>
-    Coconut.database.allDocs
-      startkey: $("#search").val().toLowerCase()
-      limit: 10
-      include_docs: true
-    .then (result) =>
-      @$("#searchResults").html "
-        <ul>
-          #{
-            _(result.rows).map (row) =>
-              "<li><a style='color:black' href='#wiki/doc/#{row.id}'>#{row.doc.title}</a></li>"
-            .join("")
-          }
-        </ul>
-      "
+    unless Coconut.allDocIds
+      Coconut.database.allDocs().then (result) =>
+        Coconut.allDocIds = _(result.rows).pluck "id"
+        Coconut.fuseSearch = new Fuse(result.rows, keys: ["id"], threshold: 0.3)
+    else
+      Promise.all(_(Coconut.fuseSearch.search($("#search").val().toLowerCase())[0..10]).map (result) =>
+        Coconut.database.get(result.id).then (doc) =>
+          Promise.resolve "
+            <li>
+              <a style='color:black' href='#wiki/doc/#{result.id}'>#{doc.title}</a>
+            </li>
+          "
+      ).then (links) =>
+        $("#searchResults").html "
+          <ul>
+            #{
+              links.join("")
+            }
+          </ul>
+        "
 
   $("#searchButton").click =>
     _.delay =>

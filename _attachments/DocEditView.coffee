@@ -7,9 +7,24 @@ class DocEditView extends Backbone.View
   events:
     "click button#save": "save"
     "click button#create": "create"
+    "click button#rename": "rename"
+
+  rename: =>
+    newTitle = prompt("Enter new name", @doc.title)
+    if newTitle
+      @docId = slugify(newTitle)
+      newDoc = _(@doc).clone()
+      newDoc.title = newTitle
+      newDoc._id = @docId
+      delete newDoc._rev
+
+      Coconut.database.remove(@doc).then =>
+        @doc = newDoc
+        @render()
+        @save()
+
 
   save: =>
-    @doc.title = @$("#title").val()
     @doc.tags = @selectr.getValue()
     @doc.content = @$("#content").val()
     @doc.updated or= []
@@ -74,8 +89,7 @@ class DocEditView extends Backbone.View
           }
           #{@selectrCss()}
         </style>
-        <label>Title</label>
-        <input id='title' value='#{@doc.title or humanize(titleize(@docId))}'/>
+        <h1>#{@doc.title}<button id='rename'>Rename</button></h1>
         <label>Tags</label>
         <select id='tagChooser'></select>
         <textarea id='content'>#{@doc.content or ""}</textarea>
@@ -92,8 +106,6 @@ class DocEditView extends Backbone.View
             text: tag
           }
         .compact().value()
-
-        console.log allTags
 
         @selectr = new Selectr "#tagChooser",
           data: allTags

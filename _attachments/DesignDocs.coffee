@@ -27,6 +27,7 @@ global.DesignDocs =
       if doc.tags
         for tag in doc.tags
           emit(tag, doc.title)
+      emit(doc.title, doc.title)
     )
 
     addOrUpdateDesignDoc(Coconut.database, docNamesByTag)

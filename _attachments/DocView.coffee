@@ -21,8 +21,11 @@ class DocView extends Backbone.View
             display: inline-grid;
           }
         </style>
-        <button class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect'>
-          <a href='#wiki/edit/#{@docId}'>Edit</a></button>
+          <a href='#wiki/edit/#{@docId}'>
+            <button class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect'>
+              Edit
+            </button>
+          </a>
         </button>
         <h1>#{doc.title}</h1>
         <div id='allTags'>
@@ -38,15 +41,18 @@ class DocView extends Backbone.View
           <div id='docsWithThisTag'>
             #{
               Coconut.database.query "docNamesByTag",
-                key: doc.title
+                key: doc.title.trim()
               .then (result) =>
                 @$("#docsWithThisTag").html(
                   result.rows.map (row) =>
+                    return if doc.title.trim() is row.value
                     "
                     <a style='display:block' href='#wiki/doc/#{row.id}'>#{row.value}</a>
                     "
                   .join("")
                 )
+              .catch (error) =>
+                alert(JSON.stringify error)
               ""
             }
           </div>
